@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>The SPARK CEO Scorecard (Members)</title>
+<title>The SPARK CEO Scorecard</title>
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -23,7 +23,7 @@
 <!--  Pixel ID if you do not have it.                              -->
 <!-- ============================================================ -->
 <script>
-  var META_PIXEL_ID = "";  // intentionally empty: members are not ad traffic
+  var META_PIXEL_ID = "939672423764049";
   (function () {
     if (!META_PIXEL_ID || META_PIXEL_ID.indexOf("YOUR_PIXEL") === 0) return; // not set yet, do nothing
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -50,20 +50,7 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAABVCAYAAAA4/D02
 //  Until you do, leads just log to the browser console (nothing breaks).
 //  Steps to get the URL are in the handover notes.
 // ============================================================
-const ZAPIER_WEBHOOK_URL = "";  // intentionally empty: members are not leads
-
-// ============================================================
-//  MEMBER HUB LINKS  ::  paste each force's hub page URL below.
-//  When a member finishes, their weakest force button links here.
-// ============================================================
-const ENDGAME_LINK = "https://sparkbusiness.global/endgame";
-const HUB_LINKS = {
-  "Systems":   "https://sparkbusiness.global/systems",
-  "Profit":    "https://sparkbusiness.global/profit",
-  "Audience":  "https://sparkbusiness.global/audience",
-  "Revenue":   "https://sparkbusiness.global/revenue",
-  "Keep Going":"https://sparkbusiness.global/keep-going",
-};
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/14360628/43iopy7/";
 
 const C = {
   ink: "#333031",
@@ -150,7 +137,7 @@ function Btn({children,onClick,disabled,kind="solid",full}) {
 
 const inputStyle={width:"100%",boxSizing:"border-box",padding:"15px 16px",marginBottom:12,border:"1.5px solid #d8d2ca",background:"#fff",borderRadius:0,font:"400 16px ui-sans-serif, system-ui",color:C.ink,outline:"none"};
 
-function ForceResult({rank,forceKey,score,big,showActions,hubLink,hubLabel}) {
+function ForceResult({rank,forceKey,score,big,showActions}) {
   const f = FORCES.find(x=>x.key===forceKey);
   if(!f) return null;
   return (
@@ -175,18 +162,13 @@ function ForceResult({rank,forceKey,score,big,showActions,hubLink,hubLabel}) {
           ))}
         </div>
       )}
-      {hubLink && (
-        <div style={{marginTop:18,paddingTop:18,borderTop:"1.5px solid "+(big?"#d9b3ae":C.cream)}}>
-          <Btn onClick={()=>window.open(hubLink,"_blank")}>{hubLabel}</Btn>
-        </div>
-      )}
     </div>
   );
 }
 
 function App() {
   const [stage,setStage]=useState("intro");
-  const [isMember, setIsMember] = useState(true);
+  const [isMember,setIsMember]=useState(null);
   const [step,setStep]=useState(0);
   const [answers,setAnswers]=useState({});
   const [email,setEmail]=useState("");
@@ -270,7 +252,7 @@ function App() {
             Five forces run every business. Rate each one honestly and the Scorecard shows you the two that are limiting your growth right now, and exactly where to focus this quarter.
           </p>
           <p style={{font:"400 15px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:520,margin:"0 0 8px"}}>Takes about two minutes. Go with your instinct, don't overthink it.</p><p style={{font:"400 14px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:520,margin:"0 0 32px"}}>First we'll point you back to your <strong style={{color:C.ink}}>Endgame</strong> (where you're heading), then the forces to focus on to get there.</p>
-          <Btn onClick={()=>setStage("quiz")}>Start the Scorecard →</Btn>
+          <Btn onClick={()=>setStage("door")}>Start the Scorecard →</Btn>
         </div>
       )}
 
@@ -279,7 +261,7 @@ function App() {
           <Eyebrow>One quick thing</Eyebrow>
           <h2 style={{font:"800 clamp(26px,4vw,36px)/1.1 ui-sans-serif, system-ui",letterSpacing:"-0.01em",margin:"0 0 28px",maxWidth:520}}>Are you already inside SPARK?</h2>
           <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
-            <Btn kind="outline" onClick={()=>{window.open("https://sparkbusiness.global/start-here","_blank");setIsMember(true);setStage("quiz");}}>Yes, I'm a member</Btn>
+            <Btn kind="outline" onClick={()=>{window.location.href="https://sparkbusiness.global/ceo-scorecard-members";}}>Yes, I'm a member</Btn>
             <Btn kind="outline" onClick={()=>{setIsMember(false);setStage("quiz"); if(window.sparkTrack) window.sparkTrack("ScorecardStarted");}}>Not yet</Btn>
           </div>
           <p style={{font:"400 14px/1.6 ui-sans-serif, system-ui",color:C.muted,marginTop:28,maxWidth:480}}>Members go straight to their result and the hub to focus on. If you're not a member yet, we'll send your full result to your inbox.</p>
@@ -343,22 +325,22 @@ function App() {
           <Eyebrow>{isMember?"Your focus this quarter":"Your Scorecard result"}</Eyebrow>
           <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr)",gap:24}}>
             <Radar scores={scores}/>
-            <a href={ENDGAME_LINK} target="_blank" style={{display:"block",textDecoration:"none",background:C.ink,color:C.paper,padding:"22px 24px"}}>
+            <div style={{background:C.ink,color:C.paper,padding:"22px 24px"}}>
               <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.roseSoft,marginBottom:8}}>Step one &middot; Your Endgame</div>
-              <p style={{font:"400 15px/1.55 ui-sans-serif, system-ui",margin:"0 0 10px",color:C.cream}}>Before you touch any force, get clear on where you're heading. Endgame is the fixed star. Set it once and revisit it now and then. Everything below is how you move toward it, one season at a time.</p>
-              <span style={{font:"700 13px ui-sans-serif, system-ui",color:C.roseSoft}}>Go to your Endgame &rarr;</span>
-            </a>
+              <p style={{font:"400 15px/1.55 ui-sans-serif, system-ui",margin:0,color:C.cream}}>Before you touch any force, get clear on where you're heading. Endgame is the fixed star. Set it once and revisit it now and then. Everything below is how you move toward it, one season at a time.</p>
+            </div>
             <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.rose,margin:"4px 0 -8px"}}>Step two &middot; This season's focus</div>
-            <ForceResult rank="Primary focus" forceKey={primary} score={scores[primary]} big showActions={!isMember} hubLink={isMember ? (HUB_LINKS[primary] && HUB_LINKS[primary].indexOf("PASTE_")!==0 ? HUB_LINKS[primary] : "https://sparkbusiness.global/spark-ceo-hub") : null} hubLabel={"Go to the "+primary+" hub →"}/>
+            <ForceResult rank="Primary focus" forceKey={primary} score={scores[primary]} big showActions={!isMember}/>
             <ForceResult rank="And right behind it" forceKey={secondary} score={scores[secondary]} showActions={!isMember}/>
             <div style={{borderTop:"2px solid "+C.ink,paddingTop:22}}>
-              <p style={{font:"400 15px/1.6 ui-sans-serif, system-ui",color:C.muted,margin:isMember?"0":"0 0 18px"}}>
+              <p style={{font:"400 15px/1.6 ui-sans-serif, system-ui",color:C.muted,margin:"0 0 18px"}}>
                 {isMember
                   ? "These two are your wheel this season. Focus here, then re-run the Scorecard next quarter, the constraint moves as you grow. That's the work, and it never really ends."
                   : "Those actions will move the needle this week. Inside SPARK there's a whole hub for each force that goes deeper than any checklist can, plus a quarterly rhythm that walks you through whichever one is limiting you right now."}
               </p>
-              {!isMember &&
-                <Btn onClick={()=>window.open("https://sparkbusiness.global/spark-ceo-hub","_blank")}>See how SPARK fixes this →</Btn>}
+              {isMember
+                ? <Btn onClick={()=>alert("(Demo) Route the member to the "+primary+" hub.")}>{"Go to the "+primary+" hub →"}</Btn>
+                : <Btn onClick={()=>window.open("https://sparkbusiness.global/spark-ceo-hub","_blank")}>See how SPARK fixes this →</Btn>}
             </div>
             <p style={{font:"600 16px/1.5 ui-sans-serif, system-ui",color:C.ink,textAlign:"center",margin:"8px 0 0"}}>
               In case no one else tells you today , <br/>
