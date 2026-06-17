@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The SPARK CEO Scorecard (Members)</title>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html,body{margin:0;padding:0;background:#f4f2f0;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;}
+  #root{max-width:680px;margin:24px auto;padding:0 16px 28px;}
+  button{font-family:inherit;}
+</style>
+</head>
+<body>
+<!-- ============================================================ -->
+<!--  META PIXEL  ::  paste your Pixel ID between the quotes below -->
+<!--  Then this tool will track: scorecard started, completed,     -->
+<!--  and email submitted (the key conversion). Ask Brad for the   -->
+<!--  Pixel ID if you do not have it.                              -->
+<!-- ============================================================ -->
+<script>
+  var META_PIXEL_ID = "";  // intentionally empty: members are not ad traffic
+  (function () {
+    if (!META_PIXEL_ID || META_PIXEL_ID.indexOf("YOUR_PIXEL") === 0) return; // not set yet, do nothing
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', META_PIXEL_ID);
+    fbq('track', 'PageView');
+  })();
+  // Safe wrapper so event calls never error if the pixel is not set.
+  window.sparkTrack = function (eventName, params) {
+    try { if (window.fbq) { window.fbq('trackCustom', eventName, params || {}); } } catch (e) {}
+  };
+</script>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useRef, useEffect } = React;
+
+const LOGO = "data:image/png;base64,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";
+
+// ============================================================
+//  ZAPIER WEBHOOK  ::  paste your "Webhooks by Zapier" Catch Hook URL between the quotes below.
+//  Until you do, leads just log to the browser console (nothing breaks).
+//  Steps to get the URL are in the handover notes.
+// ============================================================
+const ZAPIER_WEBHOOK_URL = "";  // intentionally empty: members are not leads
+
+// ============================================================
+//  MEMBER HUB LINKS  ::  paste each force's hub page URL below.
+//  When a member finishes, their weakest force button links here.
+// ============================================================
+const ENDGAME_LINK = "https://sparkbusiness.global/endgame";
+const HUB_LINKS = {
+  "Systems":   "https://sparkbusiness.global/systems",
+  "Profit":    "https://sparkbusiness.global/profit",
+  "Audience":  "https://sparkbusiness.global/audience",
+  "Revenue":   "https://sparkbusiness.global/revenue",
+  "Keep Going":"https://sparkbusiness.global/keep-going",
+};
+
+const C = {
+  ink: "#333031",
+  paper: "#f4f2f0",
+  rose: "#c36e6e",
+  roseSoft: "#e2b5b0",
+  roseWash: "#efdcd9",
+  cream: "#e7e2d8",
+  muted: "#7a736e",
+  white: "#ffffff",
+};
+
+const FORCES = [
+  { key:"Systems", tagline:"How well your business runs without relying on you.",
+    statements:["My business has clear processes for how work gets done.","I use tools, automation or systems to reduce manual work.","If I took a week off, my business could still operate.","I am not the bottleneck for everything in my business."],
+    whenWeak:"You're the bottleneck. Everything routes through you, so growth just means more on your plate.",
+    focus:"Build the processes and automations that let the business run without you in every loop.",
+    actions:["Pick the one task you repeat most each week and write it down as a 5-step checklist.","List everything only you can do, then choose one to hand off or automate this month.","Document your single most important process so someone else could follow it."] },
+  { key:"Profit", tagline:"How well your business rewards you financially.",
+    statements:["I know my profit margin.","I pay myself consistently.","My business generates surplus cash after expenses.","I feel confident about the financial health of my business."],
+    whenWeak:"The business is busy but it isn't reliably paying you. Revenue may be fine while profit leaks away.",
+    focus:"Get visibility on margin and cash, then pay yourself first, turn activity into money that stays.",
+    actions:["Work out your true profit margin on your main offer, revenue minus every cost.","Set a fixed amount to pay yourself on the same date each month, starting now.","List your five biggest expenses and cancel or renegotiate one this week."] },
+  { key:"Audience", tagline:"How many people know, like and trust your business.",
+    statements:["My audience is consistently growing.","New people discover my business regularly.","I have clear visibility channels (social, email, partnerships).","My brand is becoming recognised in my space."],
+    whenWeak:"Not enough new people are finding you. The top of your funnel is thin, so everything downstream is starved.",
+    focus:"Open reliable discovery channels so new people meet your business every week, not by accident.",
+    actions:["Choose ONE visibility channel and commit to showing up on it weekly for a month.","Make one piece of content that helps your ideal client, and publish it this week.","Ask three happy clients for a referral or a testimonial you can share."] },
+  { key:"Revenue", tagline:"How effectively your business converts value into income.",
+    statements:["My offers sell consistently.","I understand what drives sales in my business.","My income feels predictable rather than random.","I have clear ways to turn interest into revenue."],
+    whenWeak:"Interest isn't converting. You may have attention and even good offers, but income feels random.",
+    focus:"Tighten the path from interest to sale so income becomes predictable instead of a guessing game.",
+    actions:["Write down the exact steps a buyer takes from first hearing about you to paying.","Find the step where most people drop off, and fix that one thing first.","Make one clear, time-bound offer to your existing audience this week."] },
+  { key:"Keep Going", tagline:"Your ability to sustain the journey of entrepreneurship.",
+    statements:["I feel energised by my business.","I have support or community around me.","I have clarity about what to focus on next.","I feel confident I can keep growing this business."],
+    whenWeak:"The tank is low. Without energy, support and focus, nothing else you build will hold for long.",
+    focus:"Rebuild energy, support and focus first. It's the fuel every other force runs on.",
+    actions:["Name the one thing draining your energy most, and remove or reduce it this week.","Reach out to one peer or community so you're not building alone.","Write down your top three priorities for the next 90 days, and ignore the rest."] },
+];
+
+const SCALE = [
+  {v:1,label:"Very weak"},{v:2,label:"Weak"},{v:3,label:"Stable"},{v:4,label:"Strong"},{v:5,label:"Exceptional"},
+];
+
+function Radar({ scores }) {
+  // Wider viewBox + horizontal padding so "Keep Going" / "Audience" never clip.
+  const W = 360, H = 300, cx = W/2, cy = 150, R = 88;
+  const n = FORCES.length;
+  const pt = (i,r) => { const a=-Math.PI/2+(i*2*Math.PI)/n; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
+  const rings=[1,2,3,4,5];
+  const dataPts = FORCES.map((f,i)=>pt(i,(R*(scores[f.key]||0))/5));
+  const dataStr = dataPts.map(p=>p.join(",")).join(" ");
+  return (
+    <svg viewBox={"0 0 "+W+" "+H} width="100%" style={{maxWidth:360,display:"block",margin:"0 auto"}}>
+      {rings.map(ring=>{
+        const poly=FORCES.map((_,i)=>pt(i,(R*ring)/5).join(",")).join(" ");
+        return <polygon key={ring} points={poly} fill="none" stroke={C.ink} strokeOpacity={0.12} strokeWidth="1"/>;
+      })}
+      {FORCES.map((_,i)=>{const[x,y]=pt(i,R);return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke={C.ink} strokeOpacity={0.12} strokeWidth="1"/>;})}
+      <polygon points={dataStr} fill={C.rose} fillOpacity={0.34} stroke={C.rose} strokeWidth="2.5"/>
+      {dataPts.map((p,i)=><circle key={i} cx={p[0]} cy={p[1]} r="3.5" fill={C.rose}/>)}
+      {FORCES.map((f,i)=>{
+        const[x,y]=pt(i,R+20);
+        const anchor = Math.abs(x-cx)<6 ? "middle" : (x<cx ? "end":"start");
+        return <text key={f.key} x={x} y={y} textAnchor={anchor} dominantBaseline="middle"
+          style={{font:"600 11px ui-sans-serif, system-ui",fill:C.ink,letterSpacing:"0.01em"}}>{f.key}</text>;
+      })}
+    </svg>
+  );
+}
+
+const Eyebrow = ({children}) => (
+  <div style={{font:"700 11px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.rose,marginBottom:14}}>{children}</div>
+);
+
+function Btn({children,onClick,disabled,kind="solid",full}) {
+  const base={font:"700 14px ui-sans-serif, system-ui",letterSpacing:"0.04em",textTransform:"uppercase",padding:"15px 26px",border:"2px solid "+C.ink,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"transform .12s ease, background .2s ease",opacity:disabled?0.4:1,borderRadius:0};
+  const styles = kind==="solid" ? {...base,background:C.ink,color:C.paper} : {...base,background:"transparent",color:C.ink};
+  return <button style={styles} onClick={onClick} disabled={disabled}
+    onMouseDown={e=>!disabled&&(e.currentTarget.style.transform="translateY(1px)")}
+    onMouseUp={e=>(e.currentTarget.style.transform="translateY(0)")}
+    onMouseLeave={e=>(e.currentTarget.style.transform="translateY(0)")}>{children}</button>;
+}
+
+const inputStyle={width:"100%",boxSizing:"border-box",padding:"15px 16px",marginBottom:12,border:"1.5px solid #d8d2ca",background:"#fff",borderRadius:0,font:"400 16px ui-sans-serif, system-ui",color:C.ink,outline:"none"};
+
+function ForceResult({rank,forceKey,score,big,showActions,hubLink,hubLabel}) {
+  const f = FORCES.find(x=>x.key===forceKey);
+  if(!f) return null;
+  return (
+    <div style={{border:"2px solid "+(big?C.rose:C.ink),background:big?C.roseWash:"#fff",padding:"22px 24px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6,flexWrap:"wrap",gap:8}}>
+        <span style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.2em",textTransform:"uppercase",color:"#a85f5f"}}>{rank}</span>
+        <span style={{font:"700 13px ui-sans-serif, system-ui",color:C.muted}}>{score.toFixed(1)} / 5</span>
+      </div>
+      <h3 style={{font:"800 "+(big?"30px":"23px")+"/1.05 ui-sans-serif, system-ui",letterSpacing:"-0.01em",margin:"0 0 10px",color:C.ink}}>{f.key}</h3>
+      <p style={{font:"500 15px/1.5 ui-sans-serif, system-ui",margin:"0 0 10px",color:C.ink}}>{f.whenWeak}</p>
+      <p style={{font:"400 14px/1.55 ui-sans-serif, system-ui",margin:0,color:C.muted}}>
+        <strong style={{color:C.ink}}>Focus:</strong> {f.focus}
+      </p>
+      {showActions && (
+        <div style={{marginTop:18,paddingTop:18,borderTop:"1.5px solid "+(big?"#d9b3ae":C.cream)}}>
+          <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.18em",textTransform:"uppercase",color:"#a85f5f",marginBottom:12}}>Start here this week</div>
+          {f.actions.map((a,i)=>(
+            <div key={i} style={{display:"flex",gap:12,marginBottom:11,alignItems:"flex-start"}}>
+              <span style={{flexShrink:0,width:22,height:22,borderRadius:"50%",background:C.ink,color:C.paper,font:"700 11px ui-sans-serif, system-ui",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>{i+1}</span>
+              <span style={{font:"400 14px/1.5 ui-sans-serif, system-ui",color:C.ink}}>{a}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {hubLink && (
+        <div style={{marginTop:18,paddingTop:18,borderTop:"1.5px solid "+(big?"#d9b3ae":C.cream)}}>
+          <Btn onClick={()=>window.open(hubLink,"_blank")}>{hubLabel}</Btn>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const [stage,setStage]=useState("intro");
+  const [isMember, setIsMember] = useState(true);
+  const [step,setStep]=useState(0);
+  const [answers,setAnswers]=useState({});
+  const [email,setEmail]=useState("");
+  const [name,setName]=useState("");
+  const [submitted,setSubmitted]=useState(false);
+  const [sending,setSending]=useState(false);
+  const topRef=useRef(null);
+  useEffect(()=>{topRef.current&&topRef.current.scrollIntoView({behavior:"smooth",block:"start"});},[stage,step]);
+
+  const forceScore=(key)=>{const a=answers[key];if(!a||a.some(x=>x==null))return null;return a.reduce((s,x)=>s+x,0)/a.length;};
+  const scores=useMemo(()=>{const o={};FORCES.forEach(f=>o[f.key]=forceScore(f.key)||0);return o;},[answers]);
+  const allAnswered=FORCES.every(f=>{const a=answers[f.key];return a&&a.length===4&&a.every(x=>x!=null);});
+  const ranked=useMemo(()=>[...FORCES].map(f=>({key:f.key,score:forceScore(f.key)!=null?forceScore(f.key):5})).sort((a,b)=>a.score-b.score),[answers]);
+  const primary=ranked[0]&&ranked[0].key, secondary=ranked[1]&&ranked[1].key;
+  const setRating=(fk,idx,val)=>setAnswers(prev=>{const cur=prev[fk]?[...prev[fk]]:[null,null,null,null];cur[idx]=val;return{...prev,[fk]:cur};});
+  const curForce=FORCES[step];
+  const curComplete=(answers[curForce&&curForce.key]||[]).filter(x=>x!=null).length===4;
+
+  async function submitLead(){
+    // Build the lead. `primary` is the weakest force = the tag we send.
+    const payload = {
+      email: email,
+      name: name,
+      tag: primary,            // weakest force, e.g. Revenue. Zapier adds this as the tag
+      secondaryForce: secondary,
+      scores: scores,
+      source: "CEO Scorecard",
+    };
+
+    // Show the result either way; the email send happens in the background so a
+    // slow or failed webhook never traps the person on the form.
+    setSending(true);
+    try {
+      if (ZAPIER_WEBHOOK_URL && ZAPIER_WEBHOOK_URL.indexOf("http") === 0) {
+        await fetch(ZAPIER_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(payload),
+        });
+      } else {
+        console.log("LEAD (no webhook set yet) →", payload);
+      }
+    } catch (e) {
+      console.warn("Lead webhook failed, showing result anyway:", e);
+    }
+    setSending(false);
+    setSubmitted(true);
+    // Meta pixel: this is the key conversion (email captured). Fire the standard
+    // Lead event so Brad can optimise ad delivery toward it, plus a custom
+    // completed event with the weakest force for breakdowns.
+    try {
+      if (window.fbq) {
+        window.fbq("track", "Lead", { content_name: "CEO Scorecard", content_category: primary });
+      }
+      if (window.sparkTrack) {
+        window.sparkTrack("ScorecardCompleted", { weakestForce: primary });
+      }
+    } catch (e) {}
+    setStage("result");
+  }
+
+  const wrap={background:C.paper,color:C.ink,minHeight:600,borderRadius:4,overflow:"hidden",border:"1px solid "+C.ink};
+  const pad={padding:"clamp(24px,5vw,52px)"};
+
+  return (
+    <div style={wrap}>
+      <div ref={topRef}></div>
+      <div style={{background:C.ink,padding:"16px clamp(24px,5vw,52px)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <img src={LOGO} alt="SPARK" style={{height:26,display:"block"}}/>
+        <span style={{font:"600 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.roseSoft}}>CEO Scorecard</span>
+      </div>
+
+      {stage==="intro" && (
+        <div style={pad}>
+          <Eyebrow>How is your business, really?</Eyebrow>
+          <h1 style={{font:"800 clamp(34px,6vw,52px)/1.02 ui-sans-serif, system-ui",letterSpacing:"-0.02em",margin:"0 0 20px"}}>
+            Find the one force<br/>holding your<br/>
+            <span style={{background:C.rose,color:C.white,padding:"0 10px"}}>business back.</span>
+          </h1>
+          <p style={{font:"400 17px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:520,margin:"0 0 12px"}}>
+            Five forces run every business. Rate each one honestly and the Scorecard shows you the two that are limiting your growth right now, and exactly where to focus this quarter.
+          </p>
+          <p style={{font:"400 15px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:520,margin:"0 0 8px"}}>Takes about two minutes. Go with your instinct, don't overthink it.</p><p style={{font:"400 14px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:520,margin:"0 0 32px"}}>First we'll point you back to your <strong style={{color:C.ink}}>Endgame</strong> (where you're heading), then the forces to focus on to get there.</p>
+          <Btn onClick={()=>setStage("quiz")}>Start the Scorecard →</Btn>
+        </div>
+      )}
+
+      {stage==="door" && (
+        <div style={pad}>
+          <Eyebrow>One quick thing</Eyebrow>
+          <h2 style={{font:"800 clamp(26px,4vw,36px)/1.1 ui-sans-serif, system-ui",letterSpacing:"-0.01em",margin:"0 0 28px",maxWidth:520}}>Are you already inside SPARK?</h2>
+          <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
+            <Btn kind="outline" onClick={()=>{window.open("https://sparkbusiness.global/start-here","_blank");setIsMember(true);setStage("quiz");}}>Yes, I'm a member</Btn>
+            <Btn kind="outline" onClick={()=>{setIsMember(false);setStage("quiz"); if(window.sparkTrack) window.sparkTrack("ScorecardStarted");}}>Not yet</Btn>
+          </div>
+          <p style={{font:"400 14px/1.6 ui-sans-serif, system-ui",color:C.muted,marginTop:28,maxWidth:480}}>Members go straight to their result and the hub to focus on. If you're not a member yet, we'll send your full result to your inbox.</p>
+        </div>
+      )}
+
+      {stage==="quiz" && curForce && (
+        <div style={pad}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
+            <Eyebrow>{"Force "+(step+1)+" of "+FORCES.length}</Eyebrow>
+            <span style={{font:"700 12px ui-sans-serif, system-ui",color:C.muted}}>{curForce.key}</span>
+          </div>
+          <div style={{display:"flex",gap:4,marginBottom:26}}>
+            {FORCES.map((f,i)=><div key={f.key} style={{flex:1,height:4,background:i<=step?C.rose:C.roseWash}}></div>)}
+          </div>
+          <h2 style={{font:"800 clamp(28px,4.5vw,40px)/1.05 ui-sans-serif, system-ui",letterSpacing:"-0.01em",margin:"0 0 6px"}}>{curForce.key}</h2>
+          <p style={{font:"400 16px/1.5 ui-sans-serif, system-ui",color:C.muted,margin:"0 0 28px",maxWidth:520}}>{curForce.tagline}</p>
+          {curForce.statements.map((s,idx)=>{
+            const val=(answers[curForce.key]||[])[idx];
+            return (
+              <div key={idx} style={{marginBottom:22,paddingBottom:22,borderBottom:"1px solid "+C.cream}}>
+                <p style={{font:"500 16px/1.4 ui-sans-serif, system-ui",margin:"0 0 12px"}}>{s}</p>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  {SCALE.map(sc=>{
+                    const active=val===sc.v;
+                    return <button key={sc.v} onClick={()=>setRating(curForce.key,idx,sc.v)} title={sc.label}
+                      style={{flex:"1 1 auto",minWidth:58,padding:"10px 8px",cursor:"pointer",border:"1.5px solid "+(active?C.ink:"#d8d2ca"),background:active?C.ink:"#fff",color:active?C.paper:C.muted,borderRadius:0,transition:"all .12s ease",font:"700 13px ui-sans-serif, system-ui"}}>
+                      <div style={{fontSize:16}}>{sc.v}</div>
+                      <div style={{fontSize:9,fontWeight:600,letterSpacing:"0.04em",textTransform:"uppercase",marginTop:2}}>{sc.label}</div>
+                    </button>;
+                  })}
+                </div>
+              </div>
+            );
+          })}
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8,gap:12,flexWrap:"wrap"}}>
+            <Btn kind="outline" onClick={()=>(step===0?setStage("door"):setStep(step-1))}>← Back</Btn>
+            {step<FORCES.length-1
+              ? <Btn onClick={()=>setStep(step+1)} disabled={!curComplete}>Next force →</Btn>
+              : <Btn onClick={()=>setStage(isMember?"result":"gate")} disabled={!allAnswered}>See my result →</Btn>}
+          </div>
+        </div>
+      )}
+
+      {stage==="gate" && (
+        <div style={pad}>
+          <Eyebrow>Your result is ready</Eyebrow>
+          <h2 style={{font:"800 clamp(26px,4.2vw,38px)/1.08 ui-sans-serif, system-ui",letterSpacing:"-0.01em",margin:"0 0 16px",maxWidth:520}}>Where should we send your Scorecard?</h2>
+          <p style={{font:"400 16px/1.6 ui-sans-serif, system-ui",color:C.muted,maxWidth:480,margin:"0 0 28px"}}>We'll email your two focus areas and what to do about each, plus the occasional note to help you build a business that runs without running you.</p>
+          <div style={{maxWidth:440}}>
+            <input style={inputStyle} value={name} onChange={e=>setName(e.target.value)} placeholder="First name"/>
+            <input style={inputStyle} value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" type="email"/>
+            <div style={{marginTop:8}}><Btn full onClick={submitLead} disabled={sending||!email.includes("@")||name.trim().length<1}>{sending?"Sending…":"Show my result →"}</Btn></div>
+            <p style={{font:"400 12px/1.5 ui-sans-serif, system-ui",color:C.muted,marginTop:14}}>No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      )}
+
+      {stage==="result" && (
+        <div style={pad}>
+          <Eyebrow>{isMember?"Your focus this quarter":"Your Scorecard result"}</Eyebrow>
+          <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr)",gap:24}}>
+            <Radar scores={scores}/>
+            <a href={ENDGAME_LINK} target="_blank" style={{display:"block",textDecoration:"none",background:C.ink,color:C.paper,padding:"22px 24px"}}>
+              <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.roseSoft,marginBottom:8}}>Step one &middot; Your Endgame</div>
+              <p style={{font:"400 15px/1.55 ui-sans-serif, system-ui",margin:"0 0 10px",color:C.cream}}>Before you touch any force, get clear on where you're heading. Endgame is the fixed star. Set it once and revisit it now and then. Everything below is how you move toward it, one season at a time.</p>
+              <span style={{font:"700 13px ui-sans-serif, system-ui",color:C.roseSoft}}>Go to your Endgame &rarr;</span>
+            </a>
+            <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.rose,margin:"4px 0 -8px"}}>Step two &middot; This season's focus</div>
+            <ForceResult rank="Primary focus" forceKey={primary} score={scores[primary]} big showActions={!isMember} hubLink={isMember ? (HUB_LINKS[primary] && HUB_LINKS[primary].indexOf("PASTE_")!==0 ? HUB_LINKS[primary] : "https://sparkbusiness.global/spark-ceo-hub") : null} hubLabel={"Go to the "+primary+" hub →"}/>
+            <ForceResult rank="And right behind it" forceKey={secondary} score={scores[secondary]} showActions={!isMember}/>
+            <div style={{borderTop:"2px solid "+C.ink,paddingTop:22}}>
+              <p style={{font:"400 15px/1.6 ui-sans-serif, system-ui",color:C.muted,margin:isMember?"0":"0 0 18px"}}>
+                {isMember
+                  ? "These two are your wheel this season. Focus here, then re-run the Scorecard next quarter, the constraint moves as you grow. That's the work, and it never really ends."
+                  : "Those actions will move the needle this week. Inside SPARK there's a whole hub for each force that goes deeper than any checklist can, plus a quarterly rhythm that walks you through whichever one is limiting you right now."}
+              </p>
+              {!isMember &&
+                <Btn onClick={()=>window.open("https://sparkbusiness.global/spark-ceo-hub","_blank")}>See how SPARK fixes this →</Btn>}
+            </div>
+            <p style={{font:"600 16px/1.5 ui-sans-serif, system-ui",color:C.ink,textAlign:"center",margin:"8px 0 0"}}>
+              In case no one else tells you today , <br/>
+              <span style={{background:C.rose,color:C.white,padding:"0 8px"}}>you're doing an amazing job.</span>
+            </p>
+            {!isMember && submitted && <p style={{font:"400 12px/1.5 ui-sans-serif, system-ui",color:C.muted,textAlign:"center",margin:0}}>A copy is on its way to {email}.</p>}
+            <button onClick={()=>{setStage("intro");setStep(0);setAnswers({});setEmail("");setName("");setSubmitted(false);setIsMember(null);}}
+              style={{background:"none",border:"none",color:C.muted,textDecoration:"underline",cursor:"pointer",font:"500 13px ui-sans-serif, system-ui",marginTop:4}}>Start over</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+
+<script>
+  // Auto-height reporter: tells the parent page exactly how tall the tool's
+  // content is, so the Squarespace iframe resizes to fit with no clipping and
+  // no extra blank space.
+  (function () {
+    var last = 0;
+    function measure() {
+      // Measure the TRUE full content height. Take the largest of several
+      // signals so a vertically-centred or flex layout can never under-report
+      // (which previously caused the iframe to clip on mobile).
+      var b = document.body, d = document.documentElement;
+      var candidates = [
+        b.scrollHeight, b.offsetHeight,
+        d.scrollHeight, d.offsetHeight, d.clientHeight
+      ];
+      var root = document.getElementById("root");
+      if (root) {
+        candidates.push(root.scrollHeight);
+        candidates.push(root.getBoundingClientRect().bottom);
+      }
+      return Math.ceil(Math.max.apply(null, candidates));
+    }
+    function postHeight() {
+      var h = measure();
+      if (h && h !== last && window.parent) {
+        last = h;
+        window.parent.postMessage({ sparkScorecardHeight: h }, "*");
+      }
+    }
+    window.addEventListener("load", postHeight);
+    window.addEventListener("resize", postHeight);
+    var mo = new MutationObserver(postHeight);
+    mo.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    var ticks = 0, t = setInterval(function () { postHeight(); if (++ticks > 20) clearInterval(t); }, 250);
+  })();
+</script>
+</body>
+</html>
