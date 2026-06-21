@@ -36,6 +36,25 @@ const HUB_LINKS = {
 };
 const ENDGAME_LINK = HUB_BASE + "/endgame";
 
+// Navigate the WHOLE browser page, not just this iframe. When the tool is
+// embedded on the Squarespace members page, a plain window.location.href would
+// load the destination (and any login gate) inside the little iframe box.
+// Targeting window.top breaks out so the hub/login page replaces the full page.
+function navigateTop(url){
+  try {
+    if (window.top && window.top !== window.self) {
+      window.top.location.href = url;
+    } else {
+      window.location.href = url;
+    }
+  } catch (e) {
+    // Cross-origin access to window.top can throw; fall back to a top-target link.
+    var a = document.createElement("a");
+    a.href = url; a.target = "_top"; a.rel = "noopener";
+    document.body.appendChild(a); a.click();
+  }
+}
+
 const C = {
   ink: "#333031",
   paper: "#f4f2f0",
@@ -178,7 +197,7 @@ function App() {
   }
   function goToHub(forceKey){
     const url = HUB_LINKS[forceKey];
-    if(url) window.location.href = url; // same-tab, stays inside the members site
+    if(url) navigateTop(url);
   }
 
   const wrap={background:C.paper,color:C.ink,minHeight:600,borderRadius:4,overflow:"hidden",border:"1px solid "+C.ink};
@@ -251,7 +270,7 @@ function App() {
           <Eyebrow>Your focus this quarter</Eyebrow>
           <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr)",gap:24}}>
             <Radar scores={scores}/>
-            <a href={ENDGAME_LINK} style={{textDecoration:"none",display:"block"}}>
+            <a href={ENDGAME_LINK} target="_top" rel="noopener" style={{textDecoration:"none",display:"block"}}>
               <div style={{background:C.ink,color:C.paper,padding:"22px 24px",cursor:"pointer"}}>
                 <div style={{font:"700 10px ui-sans-serif, system-ui",letterSpacing:"0.22em",textTransform:"uppercase",color:C.roseSoft,marginBottom:8}}>Step one &middot; Your Endgame</div>
                 <p style={{font:"400 15px/1.55 ui-sans-serif, system-ui",margin:"0 0 16px",color:C.cream}}>Before you touch any force, get clear on where you're heading. Endgame is the fixed star. Set it once and revisit it now and then. Everything below is how you move toward it, one season at a time.</p>
